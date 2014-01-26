@@ -20,6 +20,8 @@ int fdin = 0;
 int fdout;
 off_t pos = 0;
 
+unsigned long unchanged = 0, changed = 0, appended = 0;
+
 int
 main(int argc, char **argv) {
 	ssize_t ret;
@@ -37,7 +39,7 @@ main(int argc, char **argv) {
 			err(1, "read(STDIN)");
 		}
 		if(ret == 0) {
-			return 0;
+			goto done;
 		}
 		wantedread = ret;
 
@@ -57,7 +59,7 @@ main(int argc, char **argv) {
 		} while(wantedread > actualread);
 
 		if(memcmp(wantedbuf, actualbuf, BUFFERSIZE) != 0) {
-			printf("Block at %lu mismatched.\n", pos);
+			changed++;
 			written = 0;
 			do {
 				ret = pwrite(fdout, wantedbuf + written, wantedread, pos + written);
@@ -67,12 +69,15 @@ main(int argc, char **argv) {
 				assert(ret != 0);
 				written += ret;
 			} while(wantedread > written);
+		} else {
+			unchanged++;
 		}
 		pos += wantedread;
 	}
 
 extending:
 	do {
+		appended++;
 		written = 0;
 		do {
 			ret = write(fdout, wantedbuf + written, wantedread);
@@ -81,7 +86,6 @@ extending:
 			}
 			written += ret;
 		} while(wantedread > written);
-		printf("Block appended at %lu.\n", pos);
 		pos += written;
 
 		ret = read(fdin, wantedbuf, BUFFERSIZE);
@@ -91,7 +95,10 @@ extending:
 		wantedread = ret;
 	} while(ret != 0);
 
+done:
 	close(fdout);
+
+	printf("Blocks unchanged: %lu; changed: %lu; appended: %lu\n", unchanged, changed, appended);
 
 	return 0;
 }
