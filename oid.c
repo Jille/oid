@@ -1,6 +1,7 @@
 #define _XOPEN_SOURCE 500
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sysexits.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
@@ -28,6 +29,7 @@ main(int argc, char **argv) {
 
 	if(argc != 2) {
 		fprintf(stderr, "Usage: %s <file>\n", argv[0]);
+		return EX_USAGE;
 	}
 	fdout = open(argv[1], O_RDWR);
 	if(fdout == -1) {
