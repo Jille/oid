@@ -64,7 +64,7 @@ main(int argc, char **argv) {
 			changed++;
 			written = 0;
 			do {
-				ret = pwrite(fdout, wantedbuf + written, wantedread, pos + written);
+				ret = pwrite(fdout, wantedbuf + written, wantedread - written, pos + written);
 				if(ret == -1) {
 					err(1, "pwrite(%s)", argv[1]);
 				}
