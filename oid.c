@@ -66,7 +66,7 @@ main(int argc, char **argv) {
 			do {
 				ret = pwrite(fdout, wantedbuf + written, wantedread, pos + written);
 				if(ret == -1) {
-					err(1, "write(%s)", argv[1]);
+					err(1, "pwrite(%s)", argv[1]);
 				}
 				assert(ret != 0);
 				written += ret;
