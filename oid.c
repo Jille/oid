@@ -38,7 +38,7 @@ main(int argc, char **argv) {
 	while(1) {
 		ret = read(fdin, wantedbuf, BUFFERSIZE);
 		if(ret == -1) {
-			err(1, "read(STDIN)");
+			err(1, "read(STDIN, ..., %d)", BUFFERSIZE);
 		}
 		if(ret == 0) {
 			goto done;
@@ -49,11 +49,11 @@ main(int argc, char **argv) {
 		do {
 			ret = read(fdout, actualbuf + actualread, wantedread - actualread);
 			if(ret == -1) {
-				err(1, "read(fdout)");
+				err(1, "read(fdout, ..., %ld)", wantedread - actualread);
 			}
 			if(ret == 0) {
 				if(lseek(fdout, pos, SEEK_SET) == -1) {
-					err(1, "lseek(%s)", argv[1]);
+					err(1, "lseek(%s, %ld, SEEK_SET)", argv[1], pos);
 				}
 				goto extending;
 			}
@@ -66,7 +66,7 @@ main(int argc, char **argv) {
 			do {
 				ret = pwrite(fdout, wantedbuf + written, wantedread - written, pos + written);
 				if(ret == -1) {
-					err(1, "pwrite(%s)", argv[1]);
+					err(1, "pwrite(%s, ..., %ld, %ld)", argv[1], wantedread - written, pos + written);
 				}
 				assert(ret != 0);
 				written += ret;
@@ -84,7 +84,7 @@ extending:
 		do {
 			ret = write(fdout, wantedbuf + written, wantedread);
 			if(ret == -1) {
-				err(1, "write(%s)", argv[1]);
+				err(1, "write(%s, ..., %ld)", argv[1], wantedread);
 			}
 			written += ret;
 		} while(wantedread > written);
@@ -92,7 +92,7 @@ extending:
 
 		ret = read(fdin, wantedbuf, BUFFERSIZE);
 		if(ret == -1) {
-			err(1, "read(STDIN)");
+			err(1, "read(STDIN, ..., %d)", BUFFERSIZE);
 		}
 		wantedread = ret;
 	} while(ret != 0);
