@@ -1,3 +1,12 @@
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <jille@quis.cx> wrote this file. As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.
+ *   -- Jille Timmermans <jille@quis.cx>
+ * ----------------------------------------------------------------------------
+ */
 #define _FILE_OFFSET_BITS 64
 #define _XOPEN_SOURCE 500
 #include <sys/types.h>
